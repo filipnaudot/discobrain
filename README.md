@@ -1,7 +1,7 @@
 <div align='center'>
     <picture>
-        <source media="(prefers-color-scheme: light)" srcset="/docs/discobrain_logo.jpg">
-        <img alt="discobrain logo" src="/docs/discobrain_logo.jpg" width="50%" height="50%">
+        <source media="(prefers-color-scheme: light)" srcset="/docs/logo.png">
+        <img alt="discobrain logo" src="/docs/logo.png" width="50%" height="50%">
     </picture>
 </div>
 
