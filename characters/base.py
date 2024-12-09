@@ -12,11 +12,6 @@ class Character(ABC):
         pass
 
     @abstractmethod
-    def personality(self) -> str:
-        """Return the personality traits of the character."""
-        pass
-
-    @abstractmethod
     def system_prompt(self) -> str:
         """Return the system prompt for the character."""
         pass
