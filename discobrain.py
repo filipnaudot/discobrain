@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 
-from brain import Brain
+from brains.mistral_api_brain import MistralAPIBrain as Brain
 from characters.einstein import Einstein
 
 

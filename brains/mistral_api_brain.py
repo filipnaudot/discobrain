@@ -1,6 +1,8 @@
 from mistralai import Mistral
 
-class Brain:
+from .brain import Brain
+
+class MistralAPIBrain(Brain):
     def __init__(self, api_key: str):
         # Mistral setup
         self.model = "mistral-large-latest"
@@ -16,7 +18,7 @@ class Brain:
         })
 
         
-    def response(self, message):
+    def response(self, message: str):
         self._add_user_message(message)
 
         chat_response = self.mistral_client.chat.complete(
@@ -31,7 +33,7 @@ class Brain:
         return chat_response.choices[0].message.content
 
 
-    def _add_user_message(self, message):
+    def _add_user_message(self, message: str):
         self.conversation_history.append({
             "role": "user",
             "content": message
