@@ -48,6 +48,7 @@ async def clear(ctx, amount: int):
 
     try:
         deleted = await ctx.channel.purge(limit=amount + 1)  # +1 to include the command message
+        brain.reset_history()
         await ctx.send(f"Deleted {len(deleted)} messages.", delete_after=1)
     except discord.Forbidden:
         await ctx.send("I don't have permission to delete messages in this channel.")
