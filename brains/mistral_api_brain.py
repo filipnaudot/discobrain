@@ -42,7 +42,7 @@ class MistralAPIBrain(Brain):
         }]
         
 
-    def _add_user_message(self, message: str):
+    def _add_user_message(self, message: str) -> None:
         self.conversation_history.append({
             "role": "user",
             "content": message
