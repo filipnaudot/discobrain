@@ -8,3 +8,10 @@
 
 
 # DiscoBrain
+
+
+## Getting started
+To set up your Python environment for DiscoBrain, you'll need to install the required packages:
+```bash
+pip install mistral python-dotenv discord.py
+```

@@ -61,10 +61,10 @@ async def on_message(message):
         return
 
     await bot.process_commands(message)
-    if message.content.startswith("!"):
-        return
+    if message.content.startswith("!"): return
 
-    brain_response = brain.response(message.content)
+    async with message.channel.typing():
+        brain_response = brain.response(message.content)
 
     print(f"\n{character.name()}: {brain_response}\n")
     await message.channel.send(brain_response)
