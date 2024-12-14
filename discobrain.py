@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 
+from tools import Tools
 from brains.mistral_api_brain import MistralAPIBrain as Brain
 from characters.einstein import Einstein
 
@@ -22,7 +23,8 @@ intents.message_content = True
 intents.typing = False
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-brain = Brain(MISTRAL_API_KEY)
+tools = Tools()
+brain = Brain(MISTRAL_API_KEY, tools)
 character = Einstein()
 brain.add_system_prompt(character.system_prompt())
 
