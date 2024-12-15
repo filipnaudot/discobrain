@@ -14,7 +14,7 @@ class Tools:
                         "properties": {
                             "keywords": {
                                 "type": "string",
-                                "description": "The search terms for the image search.",
+                                "description": "String containing space-separated search terms for the image search.",
                             }
                         },
                         "required": ["keywords"],
