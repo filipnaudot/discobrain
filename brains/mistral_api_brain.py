@@ -10,7 +10,7 @@ class MistralAPIBrain(Brain):
         self.model: str = "mistral-large-latest"
         self.mistral_client = Mistral(api_key=api_key)
         self.tools: Tools = tools
-
+        self.max_tokens: int = 200
         self.system_prompt: str
         self.conversation_history: list = []
     
@@ -30,7 +30,7 @@ class MistralAPIBrain(Brain):
             model = self.model,
             tools=self.tools.tool_definitions,
             messages = self.conversation_history,
-            max_tokens = 100,
+            max_tokens = self.max_tokens,
             temperature = 0.7,
             safe_prompt = False
         )
@@ -80,7 +80,7 @@ class MistralAPIBrain(Brain):
             tools=self.tools.tool_definitions,
             tool_choice="auto",
             messages=self.conversation_history,
-            max_tokens=100,
+            max_tokens=self.max_tokens,
             temperature=0.7,
             safe_prompt=False
         )
