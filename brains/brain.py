@@ -1,16 +1,15 @@
 from abc import ABC, abstractmethod
-
-from tools import Tools
+import discord
 
 
 class Brain:
 
     @abstractmethod
-    def add_system_prompt(self, system_prompt: str, tools: Tools) -> None:
+    def add_system_prompt(self, system_prompt: str) -> None:
         pass
 
     @abstractmethod
-    def response(self, message: str) -> str:
+    def response(self, message: discord.Message) -> str:
         pass
 
     @abstractmethod

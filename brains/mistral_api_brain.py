@@ -1,13 +1,13 @@
 import json
 from mistralai import Mistral
+import discord
 
 from .brain import Brain
 from tools import Tools
 
 class MistralAPIBrain(Brain):
-    def __init__(self, api_key: str, model_name: str, tools: Tools):
-        # Mistral setup
-        self.model: str = model_name
+    def __init__(self, api_key: str, tools: Tools):
+        self.model: str = "pixtral-large-latest"
         self.mistral_client = Mistral(api_key=api_key)
         self.tools: Tools = tools
         self.max_tokens: int = 200
@@ -23,7 +23,7 @@ class MistralAPIBrain(Brain):
         })
 
         
-    def response(self, message: str) -> str:
+    def response(self, message: discord.Message) -> str:
         self._add_user_message(message)
 
         chat_response = self.mistral_client.chat.complete(
@@ -48,12 +48,30 @@ class MistralAPIBrain(Brain):
         }]
         
 
-    def _add_user_message(self, message: str) -> None:
+    def _add_user_message(self, message: discord.Message) -> None:
+        image_url: str | None = ""
+        if message.attachments:
+            for attachment in message.attachments:
+                if attachment.content_type and attachment.content_type.startswith('image/'):
+                    image_url = attachment.url
+                    print(f"Image URL: {attachment.url}")
+
+        message_content = [{
+            "type": "text",
+            "text": message.content
+            },]
+        if image_url:
+            message_content.append(
+                {
+                    "type": "image_url",
+                    "image_url": image_url
+                })
+            
         self.conversation_history.append({
-            "role": "user",
-            "content": message
-        })
-    
+                "role": "user",
+                "content": message_content
+            })
+
 
     def _handle_tool_call(self, chat_response):
         self.conversation_history.append(chat_response.choices[0].message)

@@ -46,7 +46,7 @@ def main(brain_path: str, character_path: str) -> None:
     bot = commands.Bot(command_prefix="!", intents=intents)
 
     tools = Tools()
-    brain: Brain = load_brain(brain_path, model_name="mistral-large-latest", api_key=API_KEY, tools=tools)
+    brain: Brain = load_brain(brain_path, api_key=API_KEY, tools=tools)
     character: Character = load_character(character_path)
     brain.add_system_prompt(character.system_prompt())
 
@@ -75,7 +75,7 @@ def main(brain_path: str, character_path: str) -> None:
             await ctx.send(f"An error occurred: {e}")
 
     @bot.event
-    async def on_message(message):
+    async def on_message(message: discord.Message):
         if message.author == bot.user:
             return
 
@@ -83,7 +83,7 @@ def main(brain_path: str, character_path: str) -> None:
         if message.content.startswith("!"): return
 
         async with message.channel.typing():
-            brain_response = brain.response(message.content)
+            brain_response = brain.response(message)
 
         print(f"\n{character.name()}: {brain_response}\n")
         await message.channel.send(brain_response)
