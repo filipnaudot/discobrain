@@ -8,7 +8,7 @@ from discord.ext import commands
 
 from tools import Tools
 from characters.base import Character
-from brains.mistral_api_brain import MistralAPIBrain as Brain
+from brains.brain import Brain
 
 
 def load_character(class_path: str) -> Character:
@@ -18,10 +18,19 @@ def load_character(class_path: str) -> Character:
         character_class = getattr(module, class_name)
         return character_class()
     except (ImportError, AttributeError) as e:
-        raise ValueError(f"Failed to load character '{class_path}': {e}")
+        raise ValueError(f"Failed to load character class '{class_path}': {e}")
+
+def load_brain(class_path: str, *args, **kwargs) -> Brain:
+    try:
+        module_name, class_name = class_path.rsplit('.', 1)
+        module = importlib.import_module(module_name)
+        brain_class = getattr(module, class_name)
+        return brain_class(*args, **kwargs)
+    except (ImportError, AttributeError) as e:
+        raise ValueError(f"Failed to load brain class '{class_path}': {e}")
 
 
-def main(character_path: str) -> None:
+def main(brain_path: str, character_path: str) -> None:
     # Env variables
     load_dotenv()
     TOKEN = os.getenv('DISCORD_TOKEN')
@@ -37,7 +46,7 @@ def main(character_path: str) -> None:
     bot = commands.Bot(command_prefix="!", intents=intents)
 
     tools = Tools()
-    brain = Brain(API_KEY, tools)
+    brain: Brain = load_brain(brain_path, api_key=API_KEY, tools=tools)
     character: Character = load_character(character_path)
     brain.add_system_prompt(character.system_prompt())
 
@@ -90,9 +99,15 @@ if __name__ == "__main__":
         required=True,
         help="Specify the character to use in the format 'module.submodule.ClassName'. For example: 'characters.einstein.Einstein'."
     )
+    parser.add_argument(
+        "--brain",
+        type=str,
+        required=True,
+        help="Specify the brain to use in the format 'module.submodule.ClassName'. For example: 'brains.mistral_api_brain.MistralAPIBrain'."
+    )
     args = parser.parse_args()
 
     try:
-        main(args.character)
+        main(args.brain, args.character)
     except ValueError as e:
         print(e)
