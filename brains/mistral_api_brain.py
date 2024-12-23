@@ -37,7 +37,10 @@ class MistralAPIBrain(Brain):
         if chat_response.choices[0].message.tool_calls:
             chat_response = self._handle_tool_call(chat_response)
 
+        self._handle_conversation_images()
+
         self.conversation_history.append({"role": "assistant", "content": chat_response.choices[0].message.content})
+
         return chat_response.choices[0].message.content
     
 
@@ -104,4 +107,20 @@ class MistralAPIBrain(Brain):
         )
 
         return chat_response
+    
+
+    def _handle_conversation_images(self):
+        """
+        Handles images in the conversation history.
+
+        This function ensures that only one image at a time is supported in the conversation. If an image is present
+        in the last message, it is immediately removed from the history.
+        """
+        # TODO: Implement a max image check instead that allows a max_images number of images.
         
+        if not self.conversation_history:
+            return
+
+        last_message = self.conversation_history[-1]
+        if "content" in last_message and isinstance(last_message["content"], list):            
+            self.conversation_history[-1]["content"] = [item for item in last_message["content"] if item.get("type") != "image_url"]
