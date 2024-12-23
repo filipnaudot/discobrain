@@ -46,7 +46,7 @@ def main(brain_path: str, character_path: str) -> None:
     bot = commands.Bot(command_prefix="!", intents=intents)
 
     tools = Tools()
-    brain: Brain = load_brain(brain_path, api_key=API_KEY, tools=tools)
+    brain: Brain = load_brain(brain_path, model_name="mistral-large-latest", api_key=API_KEY, tools=tools)
     character: Character = load_character(character_path)
     brain.add_system_prompt(character.system_prompt())
 

@@ -5,9 +5,9 @@ from .brain import Brain
 from tools import Tools
 
 class MistralAPIBrain(Brain):
-    def __init__(self, api_key: str, tools: Tools):
+    def __init__(self, api_key: str, model_name: str, tools: Tools):
         # Mistral setup
-        self.model: str = "mistral-large-latest"
+        self.model: str = model_name
         self.mistral_client = Mistral(api_key=api_key)
         self.tools: Tools = tools
         self.max_tokens: int = 200
