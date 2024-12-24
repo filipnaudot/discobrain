@@ -35,7 +35,6 @@ def main(brain_path: str, character_path: str) -> None:
     load_dotenv()
     TOKEN = os.getenv('DISCORD_TOKEN')
     GUILD_ID = int(os.getenv('DISCORD_GUILD_ID'))
-    API_KEY = os.getenv('API_KEY')
 
     # Discord intents
     intents = discord.Intents.default()
@@ -46,7 +45,7 @@ def main(brain_path: str, character_path: str) -> None:
     bot = commands.Bot(command_prefix="!", intents=intents)
 
     tools = Tools()
-    brain: Brain = load_brain(brain_path, api_key=API_KEY, tools=tools)
+    brain: Brain = load_brain(brain_path, tools=tools)
     character: Character = load_character(character_path)
     brain.add_system_prompt(character.system_prompt())
 

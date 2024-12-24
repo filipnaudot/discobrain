@@ -1,14 +1,21 @@
 import json
+import os
+
+from dotenv import load_dotenv
 from mistralai import Mistral
 import discord
 
 from .brain import Brain
 from tools import Tools
 
+load_dotenv()
+API_KEY = os.getenv('API_KEY')
+
+
 class MistralVisionAPIBrain(Brain):
-    def __init__(self, api_key: str, tools: Tools):
+    def __init__(self, tools: Tools):
         self.model: str = "pixtral-large-latest"
-        self.mistral_client = Mistral(api_key=api_key)
+        self.mistral_client = Mistral(api_key=API_KEY)
         self.tools: Tools = tools
         self.max_tokens: int = 200
         self.system_prompt: str
