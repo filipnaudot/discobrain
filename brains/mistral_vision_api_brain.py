@@ -5,7 +5,7 @@ import discord
 from .brain import Brain
 from tools import Tools
 
-class MistralAPIBrain(Brain):
+class MistralVisionAPIBrain(Brain):
     def __init__(self, api_key: str, tools: Tools):
         self.model: str = "pixtral-large-latest"
         self.mistral_client = Mistral(api_key=api_key)
