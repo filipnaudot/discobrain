@@ -62,18 +62,17 @@ class MistralAPIBrain(Brain):
         message_content = [{
             "type": "text",
             "text": message.content
-            },]
+        },]
         if image_url:
-            message_content.append(
-                {
-                    "type": "image_url",
-                    "image_url": image_url
-                })
+            message_content.append({
+                "type": "image_url",
+                "image_url": image_url
+            })
             
         self.conversation_history.append({
-                "role": "user",
-                "content": message_content
-            })
+            "role": "user",
+            "content": message_content
+        })
 
 
     def _handle_tool_call(self, chat_response):
