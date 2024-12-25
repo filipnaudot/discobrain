@@ -11,21 +11,12 @@ from characters.base import Character
 from brains.brain import Brain
 
 
-def load_character(class_path: str) -> Character:
+def class_loader(class_path: str, *args, **kwargs) -> Brain:
     try:
         module_name, class_name = class_path.rsplit('.', 1)
         module = importlib.import_module(module_name)
-        character_class = getattr(module, class_name)
-        return character_class()
-    except (ImportError, AttributeError) as e:
-        raise ValueError(f"Failed to load character class '{class_path}': {e}")
-
-def load_brain(class_path: str, *args, **kwargs) -> Brain:
-    try:
-        module_name, class_name = class_path.rsplit('.', 1)
-        module = importlib.import_module(module_name)
-        brain_class = getattr(module, class_name)
-        return brain_class(*args, **kwargs)
+        # class_object = getattr(module, class_name)(*args, **kwargs)
+        return getattr(module, class_name)(*args, **kwargs) # class_object(*args, **kwargs)
     except (ImportError, AttributeError) as e:
         raise ValueError(f"Failed to load brain class '{class_path}': {e}")
 
@@ -45,8 +36,8 @@ def main(brain_path: str, character_path: str) -> None:
     bot = commands.Bot(command_prefix="!", intents=intents)
 
     tools = Tools()
-    brain: Brain = load_brain(brain_path, tools=tools)
-    character: Character = load_character(character_path)
+    brain: Brain = class_loader(brain_path, tools=tools)
+    character: Character = class_loader(character_path)
     brain.add_system_prompt(character.system_prompt())
 
     @bot.event
