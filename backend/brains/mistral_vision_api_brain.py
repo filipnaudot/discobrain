@@ -6,7 +6,7 @@ from mistralai import Mistral
 import discord
 
 from .brain import Brain
-from tools import Tools
+from ..tools import Tools
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')

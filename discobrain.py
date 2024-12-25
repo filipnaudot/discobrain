@@ -3,20 +3,16 @@ import argparse
 import importlib
 from dotenv import load_dotenv
 
-import discord
-from discord.ext import commands
-
-from tools import Tools
-from characters.base import Character
-from brains.brain import Brain
-from discord_handler import DiscordHandler
+from backend.tools import Tools
+from backend.characters.base import Character
+from backend.brains.brain import Brain
+from frontend.discord_handler import DiscordHandler
 
 def class_loader(class_path: str, *args, **kwargs) -> Brain:
     try:
         module_name, class_name = class_path.rsplit('.', 1)
         module = importlib.import_module(module_name)
-        # class_object = getattr(module, class_name)(*args, **kwargs)
-        return getattr(module, class_name)(*args, **kwargs) # class_object(*args, **kwargs)
+        return getattr(module, class_name)(*args, **kwargs)
     except (ImportError, AttributeError) as e:
         raise ValueError(f"Failed to load brain class '{class_path}': {e}")
 

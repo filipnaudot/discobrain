@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 
-from characters.base import Character
-from brains.brain import Brain
+from backend.characters.base import Character
+from backend.brains.brain import Brain
 
 # Env variables
 load_dotenv()
