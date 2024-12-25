@@ -1,12 +1,9 @@
 import os
-import argparse
-import importlib
 from dotenv import load_dotenv
 
 import discord
 from discord.ext import commands
 
-from tools import Tools
 from characters.base import Character
 from brains.brain import Brain
 
