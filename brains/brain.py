@@ -15,3 +15,7 @@ class Brain:
     @abstractmethod
     def reset_history(self) -> None:
         pass
+
+    @abstractmethod
+    def save_history(self, title: str) -> None:
+        pass

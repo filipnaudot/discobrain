@@ -1,4 +1,5 @@
 import gc
+import json
 import os
 
 from dotenv import load_dotenv
@@ -76,6 +77,13 @@ class HuggingfaceModelLoader(Brain):
             "role": "user",
             "content": self.system_prompt
         }]
+
+    
+    def save_history(self, title: str) -> None:
+        os.makedirs("./conversations/", exist_ok=True)
+        file_path = f"./conversations/{title}.json"
+        with open(file_path, "w") as json_file:
+            json.dump(self.conversation_history, json_file, indent=4)
 
     
     def cleanup(self):        
