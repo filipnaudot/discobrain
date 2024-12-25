@@ -1,5 +1,7 @@
 import os
 from dotenv import load_dotenv
+import time
+import random
 
 import discord
 from discord.ext import commands
@@ -15,9 +17,10 @@ GUILD_ID = int(os.getenv('DISCORD_GUILD_ID'))
 
 
 class DiscordHandler:
-    def __init__(self, brain: Brain, character: Character) -> None:
+    def __init__(self, brain: Brain, character: Character, delay: bool) -> None:
         self.brain: Brain = brain
         self.character: Character = character
+        self.delay: bool = delay
         # Discord intents
         self.intents = discord.Intents.default()
         self.intents.members = True
@@ -73,12 +76,19 @@ class DiscordHandler:
         ###########
         @self.bot.event
         async def on_ready():
-            print(f"{self.bot.user} has connected to Discord.")
             guild = self.bot.get_guild(GUILD_ID)
             if guild is None:
                 print(f"Guild with ID {GUILD_ID} not found.")
                 return
             print(f"Connected to guild: {guild.name} (ID: {guild.id})")
+
+            with open(self.character.profile_picture(), 'rb') as image:
+                profile_picture = image.read()
+            await self.bot.user.edit(avatar=profile_picture)
+            # await self.bot.user.edit(username=self.character.name())
+            await guild.get_member(self.bot.user.id).edit(nick=self.character.name())
+            print(f"{self.bot.user} has connected to Discord.")
+
 
         @self.bot.event
         async def on_message(message: discord.Message):
@@ -87,6 +97,8 @@ class DiscordHandler:
 
             await self.bot.process_commands(message)
             if message.content.startswith("!"): return
+
+            if self.delay: time.sleep(random.uniform(0, 10))
 
             async with message.channel.typing():
                 brain_response = self.brain.response(message)

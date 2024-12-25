@@ -17,13 +17,13 @@ def class_loader(class_path: str, *args, **kwargs) -> Brain:
         raise ValueError(f"Failed to load brain class '{class_path}': {e}")
 
 
-def main(brain_path: str, character_path: str) -> None:
+def main(brain_path: str, character_path: str, delay: bool) -> None:
     tools = Tools()
     brain: Brain = class_loader(brain_path, tools=tools)
     character: Character = class_loader(character_path)
     brain.add_system_prompt(character.system_prompt())
 
-    discord_handler: DiscordHandler = DiscordHandler(brain, character)
+    discord_handler: DiscordHandler = DiscordHandler(brain, character, delay)
     discord_handler.run()
 
 
@@ -41,9 +41,14 @@ if __name__ == "__main__":
         required=True,
         help="Specify the brain to use in the format 'module.submodule.ClassName'. For example: 'brains.mistral_api_brain.MistralAPIBrain'."
     )
+    parser.add_argument(
+        "--delay",
+        action="store_true",
+        help="If specified, the bot will wait a random amount of seconds before replying."
+    )
     args = parser.parse_args()
 
     try:
-        main(args.brain, args.character)
+        main(args.brain, args.character, args.delay)
     except ValueError as e:
         print(e)

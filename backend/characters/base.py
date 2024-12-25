@@ -6,6 +6,10 @@ class Character(ABC):
         """Return the name of the character."""
         pass
 
+    def profile_picture(self) -> str:
+        """Return the path to the profile picture."""
+        pass
+
     @abstractmethod
     def description(self) -> str:
         """Return a description of the character."""

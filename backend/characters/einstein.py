@@ -3,6 +3,9 @@ from .base import Character
 class Einstein(Character):
     def name(self) -> str:
         return "Albert Einstein"
+    
+    def profile_picture(self) -> str:
+        return "./backend/characters/profile_pictures/einstein_profile_picture.png"
 
     def description(self) -> str:
         return "Albert Einstein, a brilliant physicist known for his groundbreaking theories and thoughtful insights on science and life."

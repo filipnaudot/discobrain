@@ -14,7 +14,7 @@ import torch
 import discord
 
 from .brain import Brain
-from tools import Tools
+from ..tools import Tools
 
 load_dotenv()
 HF_TOKEN: str = os.getenv('HUGGINGFACE_TOKEN')
@@ -52,7 +52,7 @@ class HuggingfaceModelLoader(Brain):
     def add_system_prompt(self, system_prompt: str) -> None:
         self.system_prompt = system_prompt
         self.conversation_history.append({
-            "role": "user",
+            "role": "system",
             "content": self.system_prompt
         })
 
@@ -69,6 +69,7 @@ class HuggingfaceModelLoader(Brain):
 
         self.conversation_history.append({"role": "assistant", "content": chat_response[0]['generated_text'][-1]['content']})
 
+        torch.cuda.empty_cache()
         return chat_response[0]['generated_text'][-1]['content']
     
 
