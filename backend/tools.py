@@ -38,7 +38,7 @@ class Tools:
         }
 
 
-    def brave_web_search(self, query: str) -> Dict[str, Any]:
+    def brave_web_search(self, query: str) -> str:
         """
         Perform a web search using the Brave Search API and return results.
 
