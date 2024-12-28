@@ -13,8 +13,7 @@ from transformers import (
 import torch
 import discord
 
-from .brain import Brain
-from ..tools import Tools
+from backend.brains.brain import Brain
 
 load_dotenv()
 HF_TOKEN: str = os.getenv('HUGGINGFACE_TOKEN')
@@ -22,8 +21,7 @@ MODEL_NAME: str = os.getenv('HUGGINGFACE_MODEL_NAME')
 
 
 class HuggingfaceModelLoader(Brain):
-    def __init__(self, tools: Tools):
-        # TODO: Unpack kwargs indstead of params
+    def __init__(self, *args, **kwargs):
         self.model_name: str = MODEL_NAME
         self.quantize: bool = True
         self.tokenizer:AutoTokenizer = AutoTokenizer.from_pretrained(self.model_name, token=HF_TOKEN)

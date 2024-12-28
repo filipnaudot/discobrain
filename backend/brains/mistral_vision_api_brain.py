@@ -5,18 +5,21 @@ from dotenv import load_dotenv
 from mistralai import Mistral
 import discord
 
-from .brain import Brain
-from ..tools import Tools
+from backend.brains.brain import Brain
+from backend.tools import Tools
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
 
 
 class MistralVisionAPIBrain(Brain):
-    def __init__(self, tools: Tools):
+    def __init__(self, *args, **kwargs):
         self.model: str = "pixtral-large-latest"
         self.mistral_client = Mistral(api_key=API_KEY)
-        self.tools: Tools = tools
+        
+        self.tools: Tools = kwargs.pop('tools', None)        
+        if self.tools is None: raise ValueError("Missing required 'tools' argument")
+        
         self.max_tokens: int = 200
         self.system_prompt: str
         self.conversation_history: list = []
@@ -35,7 +38,7 @@ class MistralVisionAPIBrain(Brain):
 
         chat_response = self.mistral_client.chat.complete(
             model = self.model,
-            tools=self.tools.tool_definitions,
+            tools = self.tools.tool_definitions,
             messages = self.conversation_history,
             max_tokens = self.max_tokens,
             temperature = 0.7,
