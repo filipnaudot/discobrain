@@ -85,7 +85,7 @@ class DiscordHandler:
             with open(self.character.profile_picture(), 'rb') as image:
                 profile_picture = image.read()
             await self.bot.user.edit(avatar=profile_picture)
-            # await self.bot.user.edit(username=self.character.name())
+            # await self.bot.user.edit(username="DiscoBrain")
             await guild.get_member(self.bot.user.id).edit(nick=self.character.name())
             print(f"{self.bot.user} has connected to Discord.")
 

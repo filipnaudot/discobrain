@@ -14,7 +14,7 @@ API_KEY = os.getenv('API_KEY')
 
 class MistralVisionAPIBrain(Brain):
     def __init__(self, *args, **kwargs):
-        self.model: str = "pixtral-large-latest"
+        self.model: str = "pixtral-12b-2409"
         self.mistral_client = Mistral(api_key=API_KEY)
         
         self.tools: Tools = kwargs.pop('tools', None)        

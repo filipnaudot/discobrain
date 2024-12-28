@@ -17,28 +17,26 @@ class Tools:
             {
                 "type": "function",
                 "function": {
-                    "name": "brave_web_search",
-                    "description": "Perform a web search using the Brave Search API and return results.",
+                    "name": "search_the_web",
+                    "description": "Perform a web search using a search engine API and return results.",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "The space separated search query.",
-                            }
+                            "query": {"type": "string", "description": "The space-separated search query."},
+                            "video": {"type": "boolean", "description": "Whether to return only videos (true) or all types of results (false)."},
                         },
-                        "required": ["query"],
+                        "required": ["query", "video"],
                     },
                 },
             },
         ]
 
         self.names_to_functions = {
-            'brave_web_search': functools.partial(self.brave_web_search),
+            'search_the_web': functools.partial(self.search_the_web),
         }
 
 
-    def brave_web_search(self, query: str) -> str:
+    def search_the_web(self, query: str, video: bool = False) -> str:
         """
         Perform a web search using the Brave Search API and return results.
 
@@ -62,7 +60,9 @@ class Tools:
         params = {
             "q": query,
             "count": 4,
+            "result_filter": "videos" if video else "web",
             "safesearch": "off",
+            "extra_snippets": True,
         }
 
         try:
@@ -75,8 +75,10 @@ class Tools:
             for item in data.get('web', {}).get('results', []):
                 result = {
                     "title": item.get('title'),
-                    "snippet": item.get('description'),
+                    "description": item.get('description'),
+                    "extra_snippets": item.get('extra_snippets'),
                     "url": item.get('url'),
+                    "age": item.get('age'), 
                 }
                 results.append(result)
 
@@ -96,3 +98,11 @@ class Tools:
             return {"error": f"An error occurred: {req_err}"}
         except ValueError:
             return {"error": "Failed to parse JSON response from Brave Search API."}
+        
+
+
+if __name__ == "__main__":
+    # This is used for development purposes
+    tools = Tools()
+    result = tools.search_the_web("Paris")
+    print(f"\n{result}")
