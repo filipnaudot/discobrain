@@ -52,7 +52,7 @@ if $INSTALL_LOCAL; then
         echo "No NVIDIA GPU detected. Falling back to CPU installation."
     fi
 else
-    echo "--local not provided. Skipping CUDA PyTorch specific installations."
+    echo "--local not provided. Skipping CUDA and PyTorch specific installations."
 fi
 
 # Create a virtual environment (if not already created)
