@@ -99,6 +99,7 @@ pip install python-dotenv
 pip install mistralai
 pip install discord.py
 pip install requests
+pip install audioop-lts
 
 
 echo "All dependencies have been installed successfully."
