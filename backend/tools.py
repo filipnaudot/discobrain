@@ -94,12 +94,11 @@ class Tools:
                         "extra_snippets": item.get('extra_snippets')
                     }
                     results.append(result)
-            total_results = len(results)
 
             return {
                 "query": query,
                 "results": results,
-                "total_results": total_results
+                "total_results": len(results)
             }
 
         except requests.exceptions.HTTPError as http_err:
