@@ -10,7 +10,7 @@ INSTALL_LOCAL=false
 # Parse command-line arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        --cuda)
+        --local)
             INSTALL_LOCAL=true
             ;;
         *)
@@ -52,7 +52,7 @@ if $INSTALL_LOCAL; then
         echo "No NVIDIA GPU detected. Falling back to CPU installation."
     fi
 else
-    echo "--cuda not provided. Skipping CUDA-specific installation."
+    echo "--local not provided. Skipping CUDA PyTorch specific installations."
 fi
 
 # Create a virtual environment (if not already created)
@@ -98,6 +98,7 @@ fi
 pip install python-dotenv
 pip install mistralai
 pip install discord.py
+pip install requests
 
 
 echo "All dependencies have been installed successfully."
