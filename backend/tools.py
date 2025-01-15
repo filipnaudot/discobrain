@@ -36,22 +36,23 @@ class Tools:
         }
 
 
-    def search_the_web(self, query: str, video: bool = False) -> str:
+    def search_the_web(self, query: str, video: bool = False) -> dict:
         """
-        Perform a web search using the Brave Search API and return results.
+        Perform a web or video search using the Brave Search API and return results.
 
         Args:
             query (str): The search query.
+            video (bool): If True, perform a video search; otherwise, perform a web search.
 
         Returns:
-            dict: A dictionary containing the search query, results, and total number of results,
-                or an error message in case of failure.
+            dict: A dictionary containing the search query, results, and total number of results.
         """
+
         if not BRAVE_API_KEY:
             return {"error": "Brave Search API key not found in environment variables."}
-        
+
         # Define the Brave Search API endpoint
-        api_endpoint = "https://api.search.brave.com/res/v1/web/search"
+        api_endpoint = "https://api.search.brave.com/res/v1/videos/search" if video else "https://api.search.brave.com/res/v1/web/search"
         headers = {
             "Accept": "application/json",
             "Accept-Encoding": "gzip",
@@ -59,11 +60,11 @@ class Tools:
         }
         params = {
             "q": query,
-            "count": 4,
-            "result_filter": "videos" if video else "web",
-            "safesearch": "off",
-            "extra_snippets": True,
+            "count": 5,
+            "safesearch": "moderate"
         }
+        if not video:
+            params["extra_snippets"] = True
 
         try:
             response = requests.get(api_endpoint, headers=headers, params=params, timeout=10)
@@ -72,21 +73,34 @@ class Tools:
 
             # Extract and format the search results
             results = []
-            for item in data.get('web', {}).get('results', []):
-                result = {
-                    "title": item.get('title'),
-                    "description": item.get('description'),
-                    "extra_snippets": item.get('extra_snippets'),
-                    "url": item.get('url'),
-                    "age": item.get('age'), 
-                }
-                results.append(result)
+            if video:
+                for item in data.get('results', []):
+                    result = {
+                        "title": item.get('title'),
+                        "description": item.get('description'),
+                        "url": item.get('url'),
+                        "age": item.get('age'),
+                        "duration": item.get('video', {}).get('duration'),
+                        "views": item.get('video', {}).get('views'),
+                    }
+                    results.append(result)
+            else:
+                for item in data.get('web', {}).get('results', []):
+                    result = {
+                        "title": item.get('title'),
+                        "description": item.get('description'),
+                        "url": item.get('url'),
+                        "age": item.get('age'),
+                        "extra_snippets": item.get('extra_snippets')
+                    }
+                    results.append(result)
+            total_results = len(results)
 
-            return json.dumps({
+            return {
                 "query": query,
                 "results": results,
-                "total_results": data.get('web', {}).get('total', len(results))
-            }, indent=4)
+                "total_results": total_results
+            }
 
         except requests.exceptions.HTTPError as http_err:
             return {"error": f"HTTP error occurred: {http_err}"}
@@ -104,5 +118,5 @@ class Tools:
 if __name__ == "__main__":
     # This is used for development purposes
     tools = Tools()
-    result = tools.search_the_web("Paris")
+    result = tools.search_the_web("Paris", video=False)
     print(f"\n{result}")
