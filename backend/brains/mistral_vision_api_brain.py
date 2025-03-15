@@ -107,7 +107,7 @@ class MistralVisionAPIBrain(Brain):
         self.conversation_history.append({
             "role": "tool",
             "name": function_name,
-            "content": function_result,
+            "content": str(function_result),
             "tool_call_id": tool_call.id
         })
 
