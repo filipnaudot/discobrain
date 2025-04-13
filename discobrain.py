@@ -1,8 +1,11 @@
 import os
 import argparse
 import importlib
+import yaml
+
 from dotenv import load_dotenv
 
+from backend.preset import PRESETS
 from backend.tools import Tools
 from backend.characters.base import Character
 from backend.brains.brain import Brain
@@ -16,6 +19,9 @@ def class_loader(class_path: str, *args, **kwargs) -> Brain:
     except (ImportError, AttributeError) as e:
         raise ValueError(f"Failed to load brain class '{class_path}': {e}")
 
+def load_config(config_path: str) -> dict:
+    with open(config_path, 'r') as f:
+        return yaml.safe_load(f)
 
 def main(brain_path: str, character_path: str, delay: bool) -> None:
     tools = Tools()
@@ -28,27 +34,20 @@ def main(brain_path: str, character_path: str, delay: bool) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="DiscoBrain Discord Bot")
-    parser.add_argument(
-        "--character",
-        type=str,
-        required=True,
-        help="Specify the character to use in the format 'module.submodule.ClassName'. For example: 'characters.einstein.Einstein'."
-    )
-    parser.add_argument(
-        "--brain",
-        type=str,
-        required=True,
-        help="Specify the brain to use in the format 'module.submodule.ClassName'. For example: 'brains.mistral_api_brain.MistralAPIBrain'."
-    )
-    parser.add_argument(
-        "--delay",
-        action="store_true",
-        help="If specified, the bot will wait a random amount of seconds before replying."
-    )
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--config', type=str, default='config.yaml')
     args = parser.parse_args()
 
+    config = load_config(args.config)
+    character_key = config.get('character')
+
+    if character_key not in PRESETS:
+        raise ValueError(f"Unknown character: {character_key}")
+
+    selected = PRESETS[character_key]
     try:
-        main(args.brain, args.character, args.delay)
+        main(selected['brain'],
+             selected['character'],
+             config.get('delay', False))
     except ValueError as e:
         print(e)
